@@ -1,0 +1,10 @@
+syntax: glob
+*.iml
+.gradle
+.idea/dictionaries
+.idea/libraries
+.idea/tasks.xml
+.idea/workspace.xml
+build
+gen
+local.properties

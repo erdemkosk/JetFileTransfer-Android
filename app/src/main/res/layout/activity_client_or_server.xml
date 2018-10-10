@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/rootLayout"
+    android:background="@color/colorPrimary"
+    android:orientation="vertical"
+    tools:context=".ClientOrServerActivity">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+
+        android:gravity="center">
+        <ImageView
+            android:id="@+id/app_image"
+            android:layout_width="88dp"
+            android:layout_height="88dp"
+            android:alpha="0.8"
+            android:src="@drawable/app"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center">
+        <ImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/server_image"
+            android:layout_width="56dp"
+            android:layout_margin="30dp"
+            android:layout_height="56dp"
+            android:alpha="0.8"
+            android:src="@drawable/server"
+            android:clickable="true"
+            />
+        <ImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/client_image"
+            android:layout_width="56dp"
+            android:layout_margin="30dp"
+            android:layout_height="56dp"
+            android:alpha="0.8"
+            android:src="@drawable/client"
+            android:clickable="true"
+            />
+    </LinearLayout>
+</LinearLayout>

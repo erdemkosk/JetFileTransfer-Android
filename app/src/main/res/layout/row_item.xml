@@ -1,0 +1,60 @@
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <TextView
+        android:id="@+id/fileName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:maxLines="1"
+        android:maxLength="18"
+        android:textStyle="bold"
+        android:text="Erdem.txt"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@android:color/black" />
+
+
+    <TextView
+        android:id="@+id/speed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/fileName"
+        android:layout_marginTop="5dp"
+        android:text="2kb/sn"
+        android:textColor="@android:color/black" />
+
+
+
+    <com.dinuscxj.progressbar.CircleProgressBar
+
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:id="@+id/percentiles"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:progress="40"
+        android:layout_centerVertical="true"
+        android:src="@android:drawable/ic_dialog_info"/>
+
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+
+        <TextView
+            android:id="@+id/file_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00:01"
+            android:textColor="@android:color/black"
+             />
+
+    </LinearLayout>
+
+</RelativeLayout>
