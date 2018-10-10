@@ -155,6 +155,7 @@ public class ClientActivity extends AppCompatActivity implements IActivityContro
     }
     private void stopFileClientService(){
         stopService(new Intent(ClientActivity.this, FileClient.class));
+
     }
     private  void startBroadcastClient(){
         startService(new Intent(ClientActivity.this, BroadcastClient.class));

@@ -73,10 +73,7 @@ public class UploadFragment extends ListFragment {
     public void onStop() {
         super.onStop();
         // Unbind from the service
-        if (mBound) {
-            getActivity().unbindService(mConnection);
-            mBound = false;
-        }
+        
     }
 
     @Override
