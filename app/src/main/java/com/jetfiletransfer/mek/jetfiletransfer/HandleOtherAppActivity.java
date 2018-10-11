@@ -35,13 +35,14 @@ public class HandleOtherAppActivity extends AppCompatActivity {
         if (Intent.ACTION_SEND.equals(action) && type != null) {
             if ("text/plain".equals(type)) {
                 handleSendText(intent); // Handle text being sent
-            } else if (type.startsWith("image/")) {
+            }
+            else  {
                 handleSendImage(intent); // Handle single image being sent
             }
-        } else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
-            if (type.startsWith("image/")) {
-                handleSendMultipleImages(intent); // Handle multiple images being sent
-            }
+
+        }
+        else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
+            handleSendMultipleImages(intent);
         } else {
             // Handle other intents, such as being started from the home screen
         }
@@ -61,7 +62,7 @@ public class HandleOtherAppActivity extends AppCompatActivity {
         }
         else{
             Toast.makeText(HandleOtherAppActivity.this,
-                            "To share the file you need to connect with the server or client!",
+                    "To share the file you need to connect with the server or client!",
                     Toast.LENGTH_LONG).show();
             HandleOtherAppActivity.this.finish();
         }
@@ -93,9 +94,9 @@ public class HandleOtherAppActivity extends AppCompatActivity {
         }
     }
     void handleSendMultipleImages(Intent intent) {
-         imageUris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+        imageUris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
 
-}
+    }
     private boolean isMyServiceRunning(Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
