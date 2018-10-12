@@ -15,6 +15,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -56,6 +58,9 @@ public class ClientOrServerActivity extends AppCompatActivity implements IActivi
             @Override
             public void onClick(View v) {
 
+                Animation animFadein = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fade_in);
+
+                v.startAnimation(animFadein);
                 Intent intent = new Intent(ClientOrServerActivity.this, ServerActivity.class);
                 startActivity(intent);
             }
@@ -63,10 +68,14 @@ public class ClientOrServerActivity extends AppCompatActivity implements IActivi
         client.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Animation animFadein = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fade_in);
+
+                v.startAnimation(animFadein);
                 Intent intent = new Intent(ClientOrServerActivity.this, ClientActivity.class);
                 startActivity(intent);
             }
         });
+
 
         checkandShowHelpingView();
 

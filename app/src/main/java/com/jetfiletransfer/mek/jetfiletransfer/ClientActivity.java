@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.ActivityManager;
 import android.content.Intent;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,9 +12,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog;
 import com.jaredrummler.materialspinner.MaterialSpinner;
 import com.jetfiletransfer.mek.jetfiletransfer.connections.BroadcastClient;
 import com.jetfiletransfer.mek.jetfiletransfer.connections.FileClient;
+import com.jetfiletransfer.mek.jetfiletransfer.connections.FileServer;
 import com.jetfiletransfer.mek.jetfiletransfer.controllers.FileClientController;
 import com.jetfiletransfer.mek.jetfiletransfer.helpers.ServiceHelper;
 import com.jetfiletransfer.mek.jetfiletransfer.interfaces.IActivityController;
@@ -180,6 +185,34 @@ public class ClientActivity extends AppCompatActivity implements IActivityContro
         stopFileClientService();
         stopBroadcastClient();
     }
+    @Override
+    public void onBackPressed() {
+        MaterialStyledDialog dialog= new MaterialStyledDialog.Builder(this)
+                .setTitle("Exit?")
+                .setDescription("Are you sure you want to back?")
+                .setHeaderColor(R.color.colorPrimary)
+                .setIcon(R.drawable.app)
+                .setPositiveText("Yes!")
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                        stopFileClientService();
+                        Intent myIntent = new Intent(ClientActivity.this, ClientOrServerActivity.class);
+                        startActivity(myIntent);
+
+                    }
+                })
+                .setNegativeText("No!")
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                    }
+                })
+                .withIconAnimation(true).show();
+    }
+
 
 
 }
