@@ -27,6 +27,10 @@ import android.view.MenuItem;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
 import com.jetfiletransfer.mek.jetfiletransfer.connections.FileClient;
 import com.jetfiletransfer.mek.jetfiletransfer.connections.FileServer;
 import com.jetfiletransfer.mek.jetfiletransfer.models.AppStatusEnum;
@@ -44,6 +48,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    private InterstitialAd mInterstitialAd;
 
     DownloadFragment downloadFragment = new DownloadFragment();
     UploadFragment uploadFragment = new UploadFragment();
@@ -128,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 case R.id.navigation_download:
                     transection.replace(R.id.content,downloadFragment).commit();
+                    showAds();
 
                     return true;
                 case R.id.navigation_folder:
@@ -135,6 +141,7 @@ public class MainActivity extends AppCompatActivity {
                     openDownloads(MainActivity.this);
                     return true;
             }
+
             return false;
         }
     };
@@ -155,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        generateAds();
 
         Bundle b = getIntent().getExtras();
         clientOrServer = -1; // or other values
@@ -278,7 +285,26 @@ public class MainActivity extends AppCompatActivity {
                 .withIconAnimation(true).show();
     }
 
+        private void generateAds(){
+            mInterstitialAd = new InterstitialAd(this);
+            mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+            mInterstitialAd.loadAd(new AdRequest.Builder().build());
+            mInterstitialAd.setAdListener(new AdListener() {
+                @Override
+                public void onAdClosed() {
+                    // Load the next interstitial.
+                    mInterstitialAd.loadAd(new AdRequest.Builder().build());
+                }
 
+            });
+        }
+        private void showAds(){
+            if (mInterstitialAd.isLoaded()) {
+                mInterstitialAd.show();
+            } else {
+                Log.d("TAG", "The interstitial wasn't loaded yet.");
+            }
+        }
 
 
 

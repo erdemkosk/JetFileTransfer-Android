@@ -60,6 +60,10 @@
     <string name="jetfiletransfer_video_learn">Watch the video</string>
     <string name="jetfiletransfer_video">https://www.youtube.com/watch?v=g4C_jfIkYe4</string>
 
+    <string name="title_activity_pro_version">ProVersionActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
     <!-- Strings related to Settings -->
 
 
