@@ -227,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 public void run() {
-                    Intent myIntent = new Intent(MainActivity.this, ClientActivity.class);
+                    Intent myIntent = new Intent(MainActivity.this, ClientOrServerActivity.class);
 
                     startActivity(myIntent);
                 }
@@ -239,7 +239,7 @@ public class MainActivity extends AppCompatActivity {
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 public void run() {
-                    Intent myIntent = new Intent(MainActivity.this, ServerActivity.class);
+                    Intent myIntent = new Intent(MainActivity.this, ClientOrServerActivity.class);
                     startActivity(myIntent);
                 }
             }, 1000);
