@@ -7,17 +7,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
+import com.jetfiletransfer.mek.jetfiletransfer.helpers.PurchasesManager;
+import com.jetfiletransfer.mek.jetfiletransfer.models.PurchasesModel;
 
-import com.android.billingclient.api.BillingClient;
-import com.android.billingclient.api.BillingClientStateListener;
-import com.android.billingclient.api.BillingFlowParams;
-import com.android.billingclient.api.ConsumeResponseListener;
-import com.android.billingclient.api.Purchase;
-import com.android.billingclient.api.PurchasesUpdatedListener;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
@@ -25,13 +24,14 @@ import java.util.List;
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-public class ProVersionActivity extends AppCompatActivity implements PurchasesUpdatedListener {
+public class ProVersionActivity extends AppCompatActivity {
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
      */
     private static final boolean AUTO_HIDE = true;
-    private BillingClient mBillingClient;
+    PurchasesManager manager ;
+
 
     /**
      * If {@link #AUTO_HIDE} is set, the number of milliseconds to wait after
@@ -102,7 +102,8 @@ public class ProVersionActivity extends AppCompatActivity implements PurchasesUp
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_pro_version);
-        billingProcess();
+        manager = new PurchasesManager(this);
+        //billingProcess();
         mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
         mContentView = findViewById(R.id.fullscreen_content);
@@ -124,7 +125,7 @@ public class ProVersionActivity extends AppCompatActivity implements PurchasesUp
         findViewById(R.id.dummy_button).setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 //Do stuff here
-                buyProVersion("buy_pro");
+                manager.buyProVersion("buy_pro");
             }
         });
     }
@@ -182,66 +183,8 @@ public class ProVersionActivity extends AppCompatActivity implements PurchasesUp
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
 
-    @Override
-    public void onPurchasesUpdated(int responseCode, @Nullable List<Purchase> purchases) { //satın alma işlemi bittikten sonra bu method otomatik çağırılır
-        if (responseCode == BillingClient.BillingResponse.OK
-                && purchases != null) { //satın alma başarılı
-            for ( Purchase purchase : purchases) {
-                mBillingClient.consumeAsync(purchase.getPurchaseToken(), new ConsumeResponseListener() {
-                    @Override
-                    public void onConsumeResponse(int responseCode, String purchaseToken) {
-                        if (responseCode == BillingClient.BillingResponse.OK) {
-                            //satın alma tamamlandı yapacağınız işlemler
-                        }
-                    }
-                });
-            }
-        } else if (responseCode == BillingClient.BillingResponse.USER_CANCELED) {//kullanıcı iptal etti
-            // Handle an error caused by a user canceling the purchase flow.
-            billingCanceled(); //kullanıcı iptal etti
 
-        } else {
-            billingCanceled(); //bir sorun var
-        }
-    }
 
-    private void billingCanceled() {
-        //Kullanıcı iptal ettiğinde yapılacak işlemler
-    }
-    private void billingProcess(){
-        mBillingClient = BillingClient.newBuilder(this).setListener(this).build(); //BillingClient objemizi oluşturduk
-        mBillingClient.startConnection(new BillingClientStateListener() { //satın almaya hazır mı kontrolü
-            @Override
-            public void onBillingSetupFinished(@BillingClient.BillingResponse int billingResponseCode) {
-                if (billingResponseCode == BillingClient.BillingResponse.OK) {
-                    // Satın almaya hazır
-                    // BUTONLARI AKTIF ET
-                   // enableOrDisableButtons(true); //butonları aktif et
-                } else {
-                    //TODO Kullanıcıya uyarı ver
-                    // Satın almaya hazır değil
-                    Toast.makeText(ProVersionActivity.this, "Ödeme sistemi için google play hesabını kontrol ediniz", Toast.LENGTH_SHORT).show();
-                   // enableOrDisableButtons(false);//butonları pasif et
-                }
-            }
 
-            @Override
-            public void onBillingServiceDisconnected() {
-                // Servise Bağlanamadı
-                //TODO Kullanıcıya uyarı ver
-              //  enableOrDisableButtons(false);//butonları pasif et
-                Toast.makeText(ProVersionActivity.this, "Ödeme sistemi şuanda geçerli değil", Toast.LENGTH_SHORT).show();
-            }
-        });
 
-    }
-    private void buyProVersion(String skuId) {
-        //Bir defa satın almak için
-        //Buradaki skuId , google playde tanımladığımız id'ler olmalı
-        BillingFlowParams flowParams = BillingFlowParams.newBuilder()
-                .setSku(skuId)
-                .setType(BillingClient.SkuType.INAPP)
-                .build();
-        mBillingClient.launchBillingFlow(this, flowParams);
-    }
 }

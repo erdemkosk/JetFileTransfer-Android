@@ -8,6 +8,8 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Binder;
@@ -475,7 +477,10 @@ public class FileClient extends Service {
             bigText.setSummaryText(message);
 
             mBuilder.setContentIntent(pendingIntent);
+
             mBuilder.setSmallIcon(R.drawable.appuncolor);
+
+
             mBuilder.setContentTitle(title);
             mBuilder.setContentText(message);
             mBuilder.setPriority(Notification.PRIORITY_MAX);

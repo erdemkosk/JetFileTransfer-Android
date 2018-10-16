@@ -28,19 +28,23 @@ import com.jetfiletransfer.mek.jetfiletransfer.connections.BroadcastClient;
 import com.jetfiletransfer.mek.jetfiletransfer.connections.BroadcastServer;
 import com.jetfiletransfer.mek.jetfiletransfer.connections.FileClient;
 import com.jetfiletransfer.mek.jetfiletransfer.connections.FileServer;
+import com.jetfiletransfer.mek.jetfiletransfer.helpers.PurchasesManager;
 import com.jetfiletransfer.mek.jetfiletransfer.helpers.ServiceHelper;
 import com.jetfiletransfer.mek.jetfiletransfer.helpers.SharedPreferencesHelper;
 import com.jetfiletransfer.mek.jetfiletransfer.interfaces.IActivityController;
 import com.jetfiletransfer.mek.jetfiletransfer.interfaces.IController;
+import com.jetfiletransfer.mek.jetfiletransfer.models.PurchasesModel;
 import com.jetfiletransfer.mek.jetfiletransfer.models.TcpConnectionStatus;
+import com.securepreferences.SecurePreferences;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 public class ClientOrServerActivity extends AppCompatActivity implements IActivityController {
-    ImageView server,client;
+    ImageView server,client,buy_pro_version;
     SharedPreferencesHelper sharedHelper = new SharedPreferencesHelper(this);
+    PurchasesManager manager ;
 
 
 
@@ -50,8 +54,10 @@ public class ClientOrServerActivity extends AppCompatActivity implements IActivi
         setContentView(R.layout.activity_client_or_server);
         server =  findViewById(R.id.server_image);
         client = findViewById(R.id.client_image);
+        buy_pro_version = findViewById(R.id.pro_ver);
         //Fresh Start
         closeServices();
+        manager = new PurchasesManager(this);
 
 
         server.setOnClickListener(new View.OnClickListener() {
@@ -73,6 +79,12 @@ public class ClientOrServerActivity extends AppCompatActivity implements IActivi
                 v.startAnimation(animFadein);
                 Intent intent = new Intent(ClientOrServerActivity.this, ClientActivity.class);
                 startActivity(intent);
+            }
+        });
+        buy_pro_version.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(ClientOrServerActivity.this, ProVersionActivity.class));
             }
         });
 
@@ -166,8 +178,9 @@ public class ClientOrServerActivity extends AppCompatActivity implements IActivi
                 });
     }
     private void generateProVersionHelperView(){
+
         TapTargetView.showFor(this,                 // `this` is an Activity
-                TapTarget.forView(findViewById(R.id.action_pro), "Support Us!",
+                TapTarget.forView(findViewById(R.id.pro_ver), "Support Us!",
                         "Upgrade Jet File Transfer to pro version! You will no longer see ads, and your file sending limit will be removed.")
                         // All options below are optional
                         .outerCircleColor(R.color.colorPrimary)      // Specify a color for the outer circle
@@ -201,6 +214,7 @@ public class ClientOrServerActivity extends AppCompatActivity implements IActivi
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
@@ -208,11 +222,7 @@ public class ClientOrServerActivity extends AppCompatActivity implements IActivi
             startActivity(new Intent(ClientOrServerActivity.this, SettingsPrefActivity.class));
             return true;
         }
-        if (id == R.id.action_pro) {
-            // launch settings activity
-            startActivity(new Intent(ClientOrServerActivity.this, ProVersionActivity.class));
-            return true;
-        }
+
 
         if (id == R.id.send_help) {
             // launch settings activity
@@ -255,4 +265,37 @@ public class ClientOrServerActivity extends AppCompatActivity implements IActivi
         closeServices();
         super.onDestroy();
     }
+    private void checkIsAppProVersion(){
+
+        SharedPreferencesHelper secureSharedHelper = new SharedPreferencesHelper(this,true);
+        if(secureSharedHelper.checkAppStatus()==true){
+            Toast.makeText(ClientOrServerActivity.this,   "Pro Version",
+                    Toast.LENGTH_SHORT).show();
+            buy_pro_version.setVisibility(View.GONE);
+
+        }
+        else{
+            Toast.makeText(ClientOrServerActivity.this,   "Free Version",
+                    Toast.LENGTH_SHORT).show();
+
+        }
+
+
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(PurchasesModel event) {
+        checkIsAppProVersion();
+    };
 }

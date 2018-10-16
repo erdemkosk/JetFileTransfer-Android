@@ -13,6 +13,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="200dp"
+        android:orientation="vertical"
+        android:layout_marginTop="40dp"
+
 
         android:gravity="center">
         <ImageView
@@ -21,7 +24,19 @@
             android:layout_height="88dp"
             android:alpha="0.8"
             android:src="@drawable/app"
+            android:layout_marginTop="10dp"
             />
+        <ImageView
+            android:id="@+id/pro_ver"
+            android:layout_width="match_parent"
+            android:layout_height="88dp"
+            android:alpha="0.8"
+            android:src="@drawable/pro_version"
+            android:clickable="true"
+            />
+
+
+
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"

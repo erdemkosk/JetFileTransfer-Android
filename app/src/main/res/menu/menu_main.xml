@@ -9,12 +9,6 @@
         android:title="@string/action_settings"
         app:showAsAction="always"
         android:icon="@drawable/settings"  />
-    <item
-        android:id="@+id/action_pro"
-        android:orderInCategory="100"
-        android:title="Pro"
-        app:showAsAction="always"
-        android:icon="@drawable/pro"  />
 
 
     <item

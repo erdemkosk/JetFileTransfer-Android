@@ -67,14 +67,12 @@ public class FileServer extends Service {
     protected Thread thread;
     protected Gson gson = new Gson();
     boolean isRunning = true;
-    protected AppSettings setting;
     protected String folderPath;
     protected BlockingQueue<FileItemModel> fileQueue;
     protected BufferedInputStream bis;
     protected DataInputStream dis;
     protected BufferedOutputStream bos;
     protected DataOutputStream dos;
-    private ServerInformation information;
     protected long totalTransferedBytesInoneSecondSend = 0;
     protected long totalTransferedBytesInoneSecondGet = 0;
     protected long deltaTimeGet = 0;
@@ -114,7 +112,7 @@ public class FileServer extends Service {
     private void generateSocket(int portNumber) {
         try {
             serverSocket = new ServerSocket(portNumber);
-
+            //serverSocket.setSoTimeout(100);
 
         } catch (IOException ex) {
 
@@ -184,8 +182,10 @@ public class FileServer extends Service {
         errorCallbackNumber=0;
         try {
             if(socket!=null){
+
                 socket.close();
                 serverSocket.close();
+
             }
 
 
