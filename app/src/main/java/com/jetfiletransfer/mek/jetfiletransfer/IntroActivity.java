@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
+import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -40,7 +41,7 @@ public class IntroActivity extends AppCompatActivity {
         setContentView(R.layout.activity_intro);
         logo = findViewById(R.id.app_logo);
         manager = new PurchasesManager(this);
-
+        animateImage();
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.hide();
@@ -76,6 +77,13 @@ public class IntroActivity extends AppCompatActivity {
             }
         }, 500);
 
+
+    }
+    private void animateImage(){
+        ScaleAnimation fade_in =  new ScaleAnimation(0.2f, 1f, 0.2f, 1f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        fade_in.setDuration(1000);     // animation duration in milliseconds
+        fade_in.setFillAfter(true);    // If fillAfter is true, the transformation that this animation performed will persist when it is finished.
+        logo.startAnimation(fade_in);
     }
 
 

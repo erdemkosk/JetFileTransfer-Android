@@ -13,17 +13,21 @@ import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.jetfiletransfer.mek.jetfiletransfer.MainActivity;
 import com.jetfiletransfer.mek.jetfiletransfer.R;
 import com.jetfiletransfer.mek.jetfiletransfer.helpers.Helpers;
+import com.jetfiletransfer.mek.jetfiletransfer.helpers.SharedPreferencesHelper;
 import com.jetfiletransfer.mek.jetfiletransfer.models.AppSettings;
 import com.jetfiletransfer.mek.jetfiletransfer.models.AppStatusEnum;
 import com.jetfiletransfer.mek.jetfiletransfer.models.AppStatusModel;
@@ -77,6 +81,8 @@ public class FileServer extends Service {
     protected long totalTransferedBytesInoneSecondGet = 0;
     protected long deltaTimeGet = 0;
     protected Timer timerGet;
+    static long maxTotalSpace = 10*1024*1024; //mb
+    private boolean isPro=false;
     private int errorCallbackNumber=0;
     protected Timer timerPost;
     private ServerSocket serverSocket = null;
@@ -170,7 +176,7 @@ public class FileServer extends Service {
 
     @Override
     public void onCreate() {
-
+        isPro = checkIsProVersion();
 
     }
     public void stopBroadcast(){
@@ -350,7 +356,7 @@ public class FileServer extends Service {
                 continue;
             }
             String name = file.getName();
-
+            if( isUplimitSendingFile(file)==false){
             FileItemModel model = new FileItemModel(name, 0, "00:00", "Waiting", file);
             model.setFileItemModelEnum(FileItemModelEnum.Send);
             EventBus.getDefault().post(model);//Send Event
@@ -367,7 +373,7 @@ public class FileServer extends Service {
                 model.setFileItemModelEnum(FileItemModelEnum.Send);
                 models.add(model);
             }
-
+        }
         }
         //notifyThreadCompleteToFectchRequested(); // threde işi bitti
         return models;
@@ -504,7 +510,37 @@ public class FileServer extends Service {
 
             mNotificationManager.notify(0, mBuilder.build());
         }}
+    private boolean checkIsProVersion(){
+        SharedPreferencesHelper secureSharedHelper = new SharedPreferencesHelper(this,true);
+        return secureSharedHelper.checkAppStatus();
+    }
+    private boolean isUplimitSendingFile(final File file){
+        if(isPro==false){
 
+
+            long totalSpace =  file.length(); //byte
+            Log.d("total",Long.toString(totalSpace));
+            if(totalSpace>maxTotalSpace){
+
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    public void run() {
+                        Toast.makeText(FileServer.this,file.getName() + " is bigger than 20mb. Please buy pro version!",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                return true;
+
+            }
+            else{
+                return false;
+            }
+        }
+        else{
+            return false;
+        }
+
+    }
 }
 
 

@@ -16,18 +16,24 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.jetfiletransfer.mek.jetfiletransfer.ClientOrServerActivity;
+import com.jetfiletransfer.mek.jetfiletransfer.IntroActivity;
 import com.jetfiletransfer.mek.jetfiletransfer.MainActivity;
 import com.jetfiletransfer.mek.jetfiletransfer.R;
 import com.jetfiletransfer.mek.jetfiletransfer.controllers.FileClientController;
 import com.jetfiletransfer.mek.jetfiletransfer.helpers.Helpers;
+import com.jetfiletransfer.mek.jetfiletransfer.helpers.SharedPreferencesHelper;
 import com.jetfiletransfer.mek.jetfiletransfer.models.AppSettings;
 import com.jetfiletransfer.mek.jetfiletransfer.models.AppStatusEnum;
 import com.jetfiletransfer.mek.jetfiletransfer.models.AppStatusModel;
@@ -76,6 +82,8 @@ public class FileClient extends Service {
     protected Timer timerPost;
     protected Gson gson = new Gson();
     boolean isRunning = true;
+    static long maxTotalSpace = 10*1024*1024; //mb
+    private boolean isPro=false;
 
     protected String folderPath;
     protected long deltaTimePost = 0;
@@ -180,7 +188,7 @@ public class FileClient extends Service {
 
     @Override
     public void onCreate() {
-
+       isPro = checkIsProVersion();
 
     }
     public void stopBroadcast(){
@@ -215,23 +223,27 @@ public class FileClient extends Service {
                 continue;
             }
             String name = file.getName();
+            if( isUplimitSendingFile(file)==false){
 
             FileItemModel model = new FileItemModel(name, 0, "00:00", "Waiting", file);
             model.setFileItemModelEnum(FileItemModelEnum.Send);
             EventBus.getDefault().post(model);//Send Event
             models.add(model);
-        }
+
+
         for (File folder : folders) {
 
             List<File> folderInside = Helpers.FileAndFolderHelper.listFilesAndFilesSubDirectories(folder); // folderin içinde ki tüm filelear
             for (File files : folderInside) {
 
                 String folderNames = Helpers.FileAndFolderHelper.listDirectory(files, folder.getParentFile().getName());
-                FileItemModel model = new FileItemModel(files.getName(), 0, "00:00", "Waiting", files, folderNames);
+                FileItemModel modelFile = new FileItemModel(files.getName(), 0, "00:00", "Waiting", files, folderNames);
                 //notifyPostObserversNewFileRequested(model);
-                model.setFileItemModelEnum(FileItemModelEnum.Send);
-                models.add(model);
+                modelFile.setFileItemModelEnum(FileItemModelEnum.Send);
+                models.add(modelFile);
             }
+
+        } }
 
         }
         //notifyThreadCompleteToFectchRequested(); // threde işi bitti
@@ -498,7 +510,40 @@ public class FileClient extends Service {
             }
 
             mNotificationManager.notify(0, mBuilder.build());
-        }}
+        }
+
+    }
+    private boolean checkIsProVersion(){
+        SharedPreferencesHelper secureSharedHelper = new SharedPreferencesHelper(this,true);
+        return secureSharedHelper.checkAppStatus();
+    }
+    private boolean isUplimitSendingFile(final File file){
+        if(isPro==false){
+
+
+       long totalSpace =  file.length(); //byte
+       Log.d("total",Long.toString(totalSpace));
+       if(totalSpace>maxTotalSpace){
+
+           new Handler(Looper.getMainLooper()).post(new Runnable() {
+               public void run() {
+                   Toast.makeText(FileClient.this,file.getName() + " is bigger than 20mb. Please buy pro version!",
+                           Toast.LENGTH_SHORT).show();
+               }
+           });
+
+           return true;
+
+       }
+       else{
+           return false;
+       }
+        }
+        else{
+            return false;
+        }
+
+    }
 }
 
 
