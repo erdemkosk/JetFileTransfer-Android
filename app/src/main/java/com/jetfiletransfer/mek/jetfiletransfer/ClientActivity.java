@@ -3,7 +3,9 @@ package com.jetfiletransfer.mek.jetfiletransfer;
 import android.Manifest;
 import android.app.ActivityManager;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -91,12 +93,17 @@ public class ClientActivity extends AppCompatActivity implements IActivityContro
                     @Override
                     public void onPermissionDenied(PermissionDeniedResponse response) {
                         // check for permanent denial of permission
-                        if (response.isPermanentlyDenied()) {
-                            // navigate user to app settings
-                            Snackbar.make(rootLayout, "This app needs this permission!", Snackbar.LENGTH_LONG).show();
-                        }
-                    }
+                        Snackbar.make(rootLayout, "This app needs this permission!", Snackbar.LENGTH_LONG).show();
 
+                        if(response.isPermanentlyDenied()){
+                            // navigate to app setting
+
+                            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                    Uri.fromParts("package", getPackageName(), null));
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                    }
+                    }
                     @Override
                     public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
                         token.continuePermissionRequest();

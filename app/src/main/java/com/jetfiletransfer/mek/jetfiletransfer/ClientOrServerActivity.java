@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.opengl.Visibility;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -36,15 +37,17 @@ import com.jetfiletransfer.mek.jetfiletransfer.interfaces.IController;
 import com.jetfiletransfer.mek.jetfiletransfer.models.PurchasesModel;
 import com.jetfiletransfer.mek.jetfiletransfer.models.TcpConnectionStatus;
 import com.securepreferences.SecurePreferences;
+import com.skyfishjy.library.RippleBackground;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 public class ClientOrServerActivity extends AppCompatActivity implements IActivityController {
-    ImageView server,client,buy_pro_version;
+    ImageView server,client;
     SharedPreferencesHelper sharedHelper = new SharedPreferencesHelper(this);
-    PurchasesManager manager ;
+    boolean usingPro=false;
+
 
 
 
@@ -52,12 +55,23 @@ public class ClientOrServerActivity extends AppCompatActivity implements IActivi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client_or_server);
+        final RippleBackground rippleBackground=(RippleBackground)findViewById(R.id.content);
+        rippleBackground.startRippleAnimation();
+
+
+        Intent intent = getIntent();
+        boolean isPro = intent.getBooleanExtra("key",false); //if it's a string you stored.
+        if(isPro==true){
+            //buy_pro_version.setVisibility(View.GONE);
+            usingPro=true;
+        }
+
         server =  findViewById(R.id.server_image);
         client = findViewById(R.id.client_image);
-        buy_pro_version = findViewById(R.id.pro_ver);
+
         //Fresh Start
         closeServices();
-        manager = new PurchasesManager(this);
+
 
 
         server.setOnClickListener(new View.OnClickListener() {
@@ -79,12 +93,6 @@ public class ClientOrServerActivity extends AppCompatActivity implements IActivi
                 v.startAnimation(animFadein);
                 Intent intent = new Intent(ClientOrServerActivity.this, ClientActivity.class);
                 startActivity(intent);
-            }
-        });
-        buy_pro_version.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(ClientOrServerActivity.this, ProVersionActivity.class));
             }
         });
 
@@ -145,7 +153,13 @@ public class ClientOrServerActivity extends AppCompatActivity implements IActivi
                     @Override
                     public void onTargetClick(TapTargetView view) {
                         super.onTargetClick(view);      // This call is optional
-                        generateProVersionHelperView();
+                        if(usingPro==true){
+                            sharedHelper.addHelperView();
+                        }
+                        else{
+                            generateProVersionHelperView();
+                        }
+
                     }
                 });
     }
@@ -178,33 +192,35 @@ public class ClientOrServerActivity extends AppCompatActivity implements IActivi
                 });
     }
     private void generateProVersionHelperView(){
+        if(usingPro==false){
+            TapTargetView.showFor(this,                 // `this` is an Activity
+                    TapTarget.forView(findViewById(R.id.action_pro), "Support Us!",
+                            "Upgrade Jet File Transfer to pro version! You will no longer see ads, and your file sending limit will be removed.")
+                            // All options below are optional
+                            .outerCircleColor(R.color.colorPrimary)      // Specify a color for the outer circle
+                            .outerCircleAlpha(0.96f)            // Specify the alpha amount for the outer circle
+                            .targetCircleColor(R.color.colorAccent)   // Specify a color for the target circle
+                            .titleTextSize(28)                  // Specify the size (in sp) of the title text
+                            .titleTextColor(R.color.white)      // Specify the color of the title text
+                            .descriptionTextSize(18)            // Specify the size (in sp) of the description text
+                            .descriptionTextColor(R.color.white)  // Specify the color of the description text
+                            .textColor(R.color.white)            // Specify a color for both the title and description text
+                            .textTypeface(Typeface.SANS_SERIF)  // Specify a typeface for the text
+                            .dimColor(R.color.colorPrimary)            // If set, will dim behind the view with 30% opacity of the given color
+                            .drawShadow(true)                   // Whether to draw a drop shadow or not
+                            .cancelable(false)                  // Whether tapping outside the outer circle dismisses the view
+                            .tintTarget(true)                   // Whether to tint the target view's color
+                            .transparentTarget(false)           // Specify whether the target is transparent (displays the content underneath)// Specify a custom drawable to draw as the target
+                            .targetRadius(90),                  // Specify the target radius (in dp)
+                    new TapTargetView.Listener() {          // The listener can listen for regular clicks, long clicks or cancels
+                        @Override
+                        public void onTargetClick(TapTargetView view) {
+                            super.onTargetClick(view);      // This call is optional
+                            sharedHelper.addHelperView();
+                        }
+                    });
+        }
 
-        TapTargetView.showFor(this,                 // `this` is an Activity
-                TapTarget.forView(findViewById(R.id.pro_ver), "Support Us!",
-                        "Upgrade Jet File Transfer to pro version! You will no longer see ads, and your file sending limit will be removed.")
-                        // All options below are optional
-                        .outerCircleColor(R.color.colorPrimary)      // Specify a color for the outer circle
-                        .outerCircleAlpha(0.96f)            // Specify the alpha amount for the outer circle
-                        .targetCircleColor(R.color.colorAccent)   // Specify a color for the target circle
-                        .titleTextSize(28)                  // Specify the size (in sp) of the title text
-                        .titleTextColor(R.color.white)      // Specify the color of the title text
-                        .descriptionTextSize(18)            // Specify the size (in sp) of the description text
-                        .descriptionTextColor(R.color.white)  // Specify the color of the description text
-                        .textColor(R.color.white)            // Specify a color for both the title and description text
-                        .textTypeface(Typeface.SANS_SERIF)  // Specify a typeface for the text
-                        .dimColor(R.color.colorPrimary)            // If set, will dim behind the view with 30% opacity of the given color
-                        .drawShadow(true)                   // Whether to draw a drop shadow or not
-                        .cancelable(false)                  // Whether tapping outside the outer circle dismisses the view
-                        .tintTarget(true)                   // Whether to tint the target view's color
-                        .transparentTarget(false)           // Specify whether the target is transparent (displays the content underneath)// Specify a custom drawable to draw as the target
-                        .targetRadius(90),                  // Specify the target radius (in dp)
-                new TapTargetView.Listener() {          // The listener can listen for regular clicks, long clicks or cancels
-                    @Override
-                    public void onTargetClick(TapTargetView view) {
-                        super.onTargetClick(view);      // This call is optional
-                        sharedHelper.addHelperView();
-                    }
-                });
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -220,6 +236,20 @@ public class ClientOrServerActivity extends AppCompatActivity implements IActivi
         if (id == R.id.action_settings) {
             // launch settings activity
             startActivity(new Intent(ClientOrServerActivity.this, SettingsPrefActivity.class));
+            return true;
+        }
+        if (id == R.id.action_pro) {
+            // launch settings activity
+            if(usingPro==false){
+                startActivity(new Intent(ClientOrServerActivity.this, ProVersionActivity.class));
+            }
+            else{
+                startActivity(new Intent(ClientOrServerActivity.this, ProVersionActivity.class));
+              //  LinearLayout root = findViewById(R.id.rootLayout);
+                //Snackbar snackbar = Snackbar.make(root, "You already have a pro version! Thanks for supporting!", Snackbar.LENGTH_LONG);
+                //snackbar.show();
+            }
+
             return true;
         }
 
@@ -265,37 +295,9 @@ public class ClientOrServerActivity extends AppCompatActivity implements IActivi
         closeServices();
         super.onDestroy();
     }
-    private void checkIsAppProVersion(){
-
-        SharedPreferencesHelper secureSharedHelper = new SharedPreferencesHelper(this,true);
-        if(secureSharedHelper.checkAppStatus()==true){
-            Toast.makeText(ClientOrServerActivity.this,   "Pro Version",
-                    Toast.LENGTH_SHORT).show();
-            buy_pro_version.setVisibility(View.GONE);
-
-        }
-        else{
-            Toast.makeText(ClientOrServerActivity.this,   "Free Version",
-                    Toast.LENGTH_SHORT).show();
-
-        }
-
-
-    }
-    @Override
-    public void onStart() {
-        super.onStart();
-        EventBus.getDefault().register(this);
-    }
 
     @Override
-    public void onStop() {
-        super.onStop();
-        EventBus.getDefault().unregister(this);
-    }
+    public void onBackPressed() {
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(PurchasesModel event) {
-        checkIsAppProVersion();
-    };
+    }
 }

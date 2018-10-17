@@ -6,7 +6,7 @@ android {
         applicationId "com.jetfiletransfer.mek.jetfiletransfer"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 8
+        versionCode 11
         versionName "1.0.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -42,6 +42,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-ads:16.0.1'
     implementation 'com.android.billingclient:billing:1.0'
     implementation 'com.github.scottyab:secure-preferences:v0.1.6'
+    implementation 'com.skyfishjy.ripplebackground:library:1.0.1'
 
 
 }

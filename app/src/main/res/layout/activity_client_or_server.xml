@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+
     android:layout_height="match_parent"
     android:id="@+id/rootLayout"
     android:background="@color/colorPrimary"
@@ -12,28 +13,30 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="250dp"
         android:orientation="vertical"
         android:layout_marginTop="40dp"
-
-
         android:gravity="center">
-        <ImageView
-            android:id="@+id/app_image"
-            android:layout_width="88dp"
-            android:layout_height="88dp"
-            android:alpha="0.8"
-            android:src="@drawable/app"
-            android:layout_marginTop="10dp"
-            />
-        <ImageView
-            android:id="@+id/pro_ver"
+        <com.skyfishjy.library.RippleBackground
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
-            android:layout_height="88dp"
-            android:alpha="0.8"
-            android:src="@drawable/pro_version"
-            android:clickable="true"
-            />
+            android:layout_height="match_parent"
+            android:id="@+id/content"
+            app:rb_color="@color/colorAccent"
+            app:rb_radius="32dp"
+            app:rb_rippleAmount="4"
+            app:rb_duration="3000"
+            app:rb_scale="4">
+            <ImageView
+                android:id="@+id/app_image"
+                android:layout_width="88dp"
+                android:layout_height="88dp"
+                android:alpha="0.8"
+                android:layout_centerInParent="true"
+                android:src="@drawable/app"/>
+
+        </com.skyfishjy.library.RippleBackground>
 
 
 
