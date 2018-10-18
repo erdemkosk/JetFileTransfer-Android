@@ -85,6 +85,7 @@ public class FileServer extends Service {
     private boolean isPro=false;
     private int errorCallbackNumber=0;
     protected Timer timerPost;
+    private boolean isClosedSocket=false;
     private ServerSocket serverSocket = null;
     // This is the object that receives interactions from clients.
     private final IBinder mBinder = new FileServer.LocalBinder();
@@ -109,7 +110,6 @@ public class FileServer extends Service {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String savedString = prefs.getString("tcp_port_number","4444");
         int portNumber = Integer.parseInt(savedString);
-        Log.d("val",savedString);
         generateSocket(portNumber);
         start();
         return super.onStartCommand(intent, flags, startId);
@@ -133,8 +133,10 @@ public class FileServer extends Service {
     }
     private void clientNotification() {
 
+        if(isClosedSocket==false &&serverSocket!=null){
             try {
                 socket = serverSocket.accept();
+
                 bis = new BufferedInputStream(socket.getInputStream());
                 dis = new DataInputStream(bis);
                 bos = new BufferedOutputStream(socket.getOutputStream());
@@ -143,15 +145,17 @@ public class FileServer extends Service {
             } catch (IOException ex) {
                 Logger.getLogger(FileServer.class.getName()).log(Level.SEVERE, null, ex);
             }
-            String clientIP = socket.getRemoteSocketAddress().toString();
+            if(socket!=null){
+                String clientIP = socket.getRemoteSocketAddress().toString();
 
-            String[] parts = clientIP.split(":");
-            String ip = parts[0]; // 004
-            ip = ip.replace("/", "");
-            EventBus.getDefault().post(new AppStatusModel(AppStatusEnum.connected,ip));
-            errorCallbackNumber=0;
-            //notifyClientConnectedRequested(ip);
-
+                String[] parts = clientIP.split(":");
+                String ip = parts[0]; // 004
+                ip = ip.replace("/", "");
+                EventBus.getDefault().post(new AppStatusModel(AppStatusEnum.connected,ip));
+                errorCallbackNumber=0;
+                //notifyClientConnectedRequested(ip);
+            }
+        }
     }
 
 
@@ -160,7 +164,10 @@ public class FileServer extends Service {
         @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         public void run() {
-            clientNotification();
+            if(serverSocket!=null){
+                clientNotification();
+            }
+
             try {
                 sendFileToConnection();
             } catch (IOException ex) {
@@ -188,13 +195,12 @@ public class FileServer extends Service {
         errorCallbackNumber=0;
         try {
             if(socket!=null){
-
                 socket.close();
-                serverSocket.close();
-
             }
-
-
+            if(serverSocket!=null){
+                isClosedSocket=true;
+                serverSocket.close();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

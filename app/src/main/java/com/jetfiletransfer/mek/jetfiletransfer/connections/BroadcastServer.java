@@ -147,6 +147,7 @@ public class BroadcastServer extends Service {
     @Override
     public void onDestroy() {
         stopBroadcast();
+        stopSelf();
 
     }
     private void releaseWifiLock(){

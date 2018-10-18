@@ -143,6 +143,7 @@ public class ServerActivity extends AppCompatActivity implements IActivityContro
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
 
                         stopFileServerService();
+                        stopFileBroadcastService();
                         Intent myIntent = new Intent(ServerActivity.this, ClientOrServerActivity.class);
                         startActivity(myIntent);
 
@@ -159,6 +160,10 @@ public class ServerActivity extends AppCompatActivity implements IActivityContro
     }
     private void stopFileServerService(){
         stopService(new Intent(ServerActivity.this, FileServer.class));
+
+    }
+    private void stopFileBroadcastService(){
+        stopService(new Intent(ServerActivity.this, BroadcastServer.class));
 
     }
 }
