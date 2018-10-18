@@ -495,7 +495,8 @@ public class FileClient extends Service {
 
             mBuilder.setContentTitle(title);
             mBuilder.setContentText(message);
-            mBuilder.setPriority(Notification.PRIORITY_MAX);
+            mBuilder.setPriority(Notification.DEFAULT_VIBRATE);
+            mBuilder.setVibrate(new long[]{ 0 });
             mBuilder.setStyle(bigText);
             mBuilder.setAutoCancel(true);
             mNotificationManager =
@@ -522,12 +523,12 @@ public class FileClient extends Service {
 
 
        long totalSpace =  file.length(); //byte
-       Log.d("total",Long.toString(totalSpace));
+
        if(totalSpace>maxTotalSpace){
 
            new Handler(Looper.getMainLooper()).post(new Runnable() {
                public void run() {
-                   Toast.makeText(FileClient.this,file.getName() + " is bigger than 20mb. Please buy pro version!",
+                   Toast.makeText(FileClient.this,file.getName() + " is bigger than 10mb. Please buy pro version!",
                            Toast.LENGTH_SHORT).show();
                }
            });

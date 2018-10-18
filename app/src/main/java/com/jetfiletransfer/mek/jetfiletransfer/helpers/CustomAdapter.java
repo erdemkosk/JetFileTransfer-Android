@@ -18,7 +18,7 @@ import com.jetfiletransfer.mek.jetfiletransfer.models.FileItemModel;
 
 import java.util.ArrayList;
 
-public class CustomAdapter extends ArrayAdapter<FileItemModel> implements View.OnClickListener{
+public class CustomAdapter extends ArrayAdapter<FileItemModel>{
 
     private ArrayList<FileItemModel> dataSet;
     Context mContext;
@@ -38,23 +38,9 @@ public class CustomAdapter extends ArrayAdapter<FileItemModel> implements View.O
 
     }
 
-    @Override
-    public void onClick(View v) {
 
-        int position=(Integer) v.getTag();
-        Object object= getItem(position);
-        FileItemModel dataModel=(FileItemModel)object;
 
-        switch (v.getId())
-        {
-            case R.id.fileName:
-                Snackbar.make(v, "Release date " +dataModel.getFileName(), Snackbar.LENGTH_LONG)
-                        .setAction("No action", null).show();
-                break;
-        }
-    }
 
-    private int lastPosition = -1;
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -83,15 +69,16 @@ public class CustomAdapter extends ArrayAdapter<FileItemModel> implements View.O
             result=convertView;
         }
 
-        //Animation animation = AnimationUtils.loadAnimation(mContext, (position > lastPosition) ? R.anim.up_from_bottom : R.anim.down_from_top);
-        //result.startAnimation(animation);
-        lastPosition = position;
+
+
 
         viewHolder.fileName.setText(dataModel.getFileName());
         viewHolder.file_time.setText(dataModel.getTime());
         viewHolder.speed.setText(dataModel.getTransferSpeed());
         viewHolder.percentiles.setProgress((int)dataModel.getPercentageOfLoadedFile());
         // Return the completed view to render on screen
+         Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.down_from_top);
+         result.startAnimation(animation);
         return convertView;
     }
 }

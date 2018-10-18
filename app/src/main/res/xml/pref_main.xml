@@ -65,5 +65,15 @@
 
 
     </PreferenceCategory>
-
+    <PreferenceCategory android:title="Details">
+        <Preference android:title="Special Thanks to"
+            android:summary="Onur Dindar - Sertaç Damar - Mert Ergül - Taylan Akkuş ">
+        </Preference>
+        <Preference android:title="Icons"
+            android:summary="Some of our icons are from icon8.com">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://icons8.com" />
+        </Preference>
+    </PreferenceCategory>
 </PreferenceScreen>

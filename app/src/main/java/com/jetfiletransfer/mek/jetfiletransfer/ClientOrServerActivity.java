@@ -8,6 +8,7 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.opengl.Visibility;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,9 +23,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetSequence;
 import com.getkeepsafe.taptargetview.TapTargetView;
+import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog;
 import com.jetfiletransfer.mek.jetfiletransfer.connections.BroadcastClient;
 import com.jetfiletransfer.mek.jetfiletransfer.connections.BroadcastServer;
 import com.jetfiletransfer.mek.jetfiletransfer.connections.FileClient;
@@ -244,10 +248,10 @@ public class ClientOrServerActivity extends AppCompatActivity implements IActivi
                 startActivity(new Intent(ClientOrServerActivity.this, ProVersionActivity.class));
             }
             else{
-                startActivity(new Intent(ClientOrServerActivity.this, ProVersionActivity.class));
-              //  LinearLayout root = findViewById(R.id.rootLayout);
-                //Snackbar snackbar = Snackbar.make(root, "You already have a pro version! Thanks for supporting!", Snackbar.LENGTH_LONG);
-                //snackbar.show();
+                //startActivity(new Intent(ClientOrServerActivity.this, ProVersionActivity.class));
+               LinearLayout root = findViewById(R.id.rootLayout);
+                Snackbar snackbar = Snackbar.make(root, "You already have a pro version! Thanks for supporting!", Snackbar.LENGTH_LONG);
+                snackbar.show();
             }
 
             return true;
@@ -300,4 +304,5 @@ public class ClientOrServerActivity extends AppCompatActivity implements IActivi
     public void onBackPressed() {
 
     }
+
 }
